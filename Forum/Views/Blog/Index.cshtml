@@ -1,0 +1,91 @@
+﻿@model Forum.Models.Blog.BlogIndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<p>
+    <a asp-action="Create">Создать новую тему в форуме</a>
+</p>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Index" method="get">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Page" value="@Model.Page" />
+            <div class="form-group">
+                <label asp-for="SearchKey" class="control-label"></label>
+                <input asp-for="SearchKey" class="form-control" value="@Model.SearchKey" />
+                <span asp-validation-for="SearchKey" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Author" class="control-label"></label>
+                <input asp-for="Author" class="form-control" value="@Model.Author" />
+                <span asp-validation-for="Author" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateFrom" class="control-label"></label>
+                <input asp-for="DateFrom" type="date" class="form-control" value="@Model.DateFrom" />
+                <span asp-validation-for="DateFrom" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateTo" class="control-label"></label>
+                <input asp-for="DateTo" type="date" class="form-control" value="@Model.DateTo" />
+                <span asp-validation-for="DateTo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Искать!" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+<table class="table">
+    <tbody>
+        @foreach (var item in Model.Blogs)
+        {
+            <tr>
+                
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DatePublished)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Author)
+                </td>
+
+                <td>
+                    @Html.ActionLink("Ответить", "Create", "Reply")
+                  
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@if (Model.PagingModel.HasPreviousPage)
+{
+    @Html.ActionLink("<< Назад", "Index", "Blog",
+        new Forum.Models.Blog.BlogIndexModel()
+        {
+            Author = Model.Author,
+            SearchKey = Model.SearchKey,
+            DateFrom = Model.DateFrom,
+            DateTo = Model.DateTo,
+            Page = Model.Page - 1
+        })
+}
+
+<b>@Model.Page</b>
+
+@if (Model.PagingModel.HasNextPage)
+{
+    @Html.ActionLink("Вперед >>", "Index", "Blog",
+        new Forum.Models.Blog.BlogIndexModel()
+        {
+            Author = Model.Author,
+            SearchKey = Model.SearchKey,
+            DateFrom = Model.DateFrom,
+            DateTo = Model.DateTo,
+            Page = Model.Page + 1
+        })
+}
